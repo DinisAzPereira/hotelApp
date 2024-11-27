@@ -3,6 +3,7 @@ import Box from '@mui/joy/Box';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import Typography from '@mui/joy/Typography';
+import Modal from '@mui/material/Modal';
 
 type Hotel = {
   id: string;
@@ -14,6 +15,10 @@ type Hotel = {
 };
 
 export const Hoteis = () => {
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   // State para armazenar a lista de hotéis
   const [hoteis, setHoteis] = useState<Hotel[]>([]);
 
@@ -21,6 +26,9 @@ export const Hoteis = () => {
   useEffect(() => {
     getHoteis();
   }, []);
+
+
+
 
   // Função para buscar a lista de hotéis da API
   async function getHoteis() {
@@ -42,7 +50,7 @@ export const Hoteis = () => {
       <h1>Bem-vindo à página de Hotéis</h1>
       <p>Aqui você pode encontrar os melhores hotéis disponíveis.</p>
 
-      {/* Renderizando os hotéis em uma grid de 3 colunas */}
+      {/* Renderiza os hotéis em uma grid de 3 colunas */}
       <Box
         sx={{
           display: "grid",
@@ -73,8 +81,25 @@ export const Hoteis = () => {
           
             </CardContent>
           </Card>
+
+          
         ))}
       </Box>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Text in a modal
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography>
+        </Box>
+      </Modal>
     </div>
   );
 };
