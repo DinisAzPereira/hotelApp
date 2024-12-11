@@ -3,48 +3,59 @@ import Box from "@mui/joy/Box";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Typography from "@mui/joy/Typography";
-import Modal from "@mui/material/Modal";
-import { Button, CircularProgress } from "@mui/material";
+import {  CircularProgress } from "@mui/material";
+import {  useNavigate } from "react-router-dom";
+
+type Amenitie = {
+  id: string;
+  name: string;
+};
+
+type Review = {
+  id: string;
+  bookingId: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  booking: {
+    user: {
+      name: string;
+      country: {
+        name: string;
+      };
+    };
+  };
+};
 
 type Room = {
   id: string;
-  hotelId: string;
   type: string;
   price: number;
-  bookings: {
-    id: string;
-    userId: string;
-    roomId: string;
-    checkIn: string;
-    checkOut: string;
-    reviews: {
-      id: string;
-      bookingId: string;
-      rating: number;
-      comment: string;
-      createdAt: string;
-    }[];
-  }[];
+  images: { id: string; url: string; roomId: string }[];
 };
 
-type Hotel = {
+export type Hotel = {
   id: string;
   name: string;
   description: string;
   location: string;
-  countryId: string;
-  cancellationPolicy: {
-    id: string;
-    name: string;
-    deadline: string;
-    fee: string;
-  };
+  country: { id: string; name: string };
+    cancellationPolicy: {
+      id: string;
+      name: string;
+      deadline: number;
+      fee: number;
+    };
   rooms: Room[];
+  amenities: Amenitie[];
+  reviews: Review[];
+  averageRating: number;
 };
 
+
+
 export const Hoteis = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
+
   const [hoteis, setHoteis] = useState<Hotel[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,34 +84,13 @@ export const Hoteis = () => {
     }
   };
 
-  // Função para buscar os detalhes de um hotel específico
-  const getHotelDetails = async (hotelId: string) => {
-    setError(null);
-    try {
-      const response = await fetch(
-        `https://api-tma-2024-production.up.railway.app/hotels/${hotelId}`
-      );
-      if (!response.ok) {
-        throw new Error("Erro ao buscar detalhes do hotel. Tente novamente.");
-      }
-      const data = await response.json();
-      setSelectedHotel(data); // Atualizar o estado com os detalhes do hotel
-    } catch (err: any) {
-      setError(err.message || "Erro desconhecido.");
-    } finally {
-      setOpen(true); // Abrir o modal após buscar os detalhes
-    }
+
+  const navigate = useNavigate();
+  // Função para abrir a pagina e buscar os detalhes do hotel
+  const handleOpen = (id: string) => {
+    navigate(`/hoteis/${id}`);
   };
 
-  // Função para abrir o modal e buscar os detalhes do hotel
-  const handleOpen = (hotelId: string) => {
-    getHotelDetails(hotelId);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedHotel(null);
-  };
 
   return (
     <div>
@@ -116,7 +106,7 @@ export const Hoteis = () => {
 
       {/* Exibição de erro */}
       {error && (
-        <Typography color="error" textAlign="center" sx={{ mt: 2 }}>
+        <Typography textAlign="center" sx={{ mt: 2 }}>
           {error}
         </Typography>
       )}
@@ -132,7 +122,7 @@ export const Hoteis = () => {
         >
           {hoteis.map((hotel) => (
             <Card
-              onClick={() => handleOpen(hotel.id)} // Passa apenas o id do hotel para buscar os detalhes
+              onClick={() => handleOpen(hotel.id)} 
               key={hotel.id}
               variant="outlined"
               sx={{
@@ -156,65 +146,8 @@ export const Hoteis = () => {
         </Box>
       )}
 
-      {/* Modal para exibir detalhes do hotel */}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "90%",
-            maxWidth: 500,
-            bgcolor: "black",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: "12px",
-          }}
-        >
-          <Typography id="modal-modal-title" color="white" component="h2">
-            Detalhes do Hotel
-          </Typography>
-          {selectedHotel ? (
-            <Typography
-              id="modal-modal-description"
-              sx={{ mt: 2, color: "white" }}
-            >
-              <strong>Nome:</strong> {selectedHotel.name}
-              <br />
-              <strong>Política de Cancelamento:</strong>{" "}
-              {selectedHotel.cancellationPolicy?.name || "Informação indisponível"}
-              <br />
-              <strong>Localização:</strong> {selectedHotel.location}
-              <br />
-              <strong>Descrição:</strong> {selectedHotel.description}
-              <br />
-            </Typography>
-          ) : (
-            <Typography sx={{ mt: 2, color: "white" }}>
-              Carregando informações...
-            </Typography>
-          )}
-          <Button
-            variant="contained"
-            onClick={handleClose}
-            sx={{
-              mt: 2,
-              display: "block",
-              marginLeft: "auto",
-              backgroundColor: "white",
-              color: "black",
-            }}
-          >
-            Fechar
-          </Button>
-        </Box>
-      </Modal>
+      
+     
     </div>
   );
 };

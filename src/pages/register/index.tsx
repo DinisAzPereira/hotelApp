@@ -42,7 +42,7 @@ export function Register() {
 
   async function register(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
+  
     try {
       const requestBody = {
         name: name,
@@ -52,7 +52,7 @@ export function Register() {
         country_id: country_id,
         terms: terms,
       };
-
+  
       const response = await fetch(
         "https://api-tma-2024-production.up.railway.app/sign-up",
         {
@@ -63,13 +63,16 @@ export function Register() {
           body: JSON.stringify(requestBody),
         }
       );
-
-      if (response.status === 201) {
+  
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+  
+      if (response.ok) {
+        // Trata respostas bem-sucedidas (status 200-299)
         const jsonResponse = await response.json();
-        console.log("jsonResponse: ", jsonResponse);
-
-        // Exibe o toast de sucesso
-        toast.success(" Registo efetuado com sucesso!", {
+        console.log("jsonResponse:", jsonResponse);
+  
+        toast.success("Registo efetuado com sucesso!", {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -80,10 +83,10 @@ export function Register() {
           theme: "dark",
           transition: Bounce,
         });
-
+  
         console.log("Registo efetuado com sucesso");
       } else if (response.status === 409) {
-        const jsonResponse = await response.json();
+        // Trata conflitos, como email já registrado
         console.error("Erro: o email já está registrado.");
         toast.error("O Email já está registado", {
           position: "top-center",
@@ -97,6 +100,7 @@ export function Register() {
           transition: Bounce,
         });
       } else if (response.status === 400) {
+        // Trata erros de validação
         const errorData = await response.json();
         console.error("Erro de validação:", errorData);
         toast.error("Erro de validação de dados", {
@@ -111,10 +115,22 @@ export function Register() {
           transition: Bounce,
         });
       } else {
-        const jsonResponse = await response.json();
-        console.log("jsonResponse: ", jsonResponse);
+        // Trata outros erros inesperados
+        console.error("Erro inesperado:", response);
+        toast.error("Erro inesperado ao processar o registo", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
       }
     } catch (error) {
+      // Trata erros relacionados à chamada de API ou rede
       console.error("Erro ao tentar registrar:", error);
       toast.error("Erro ao tentar registrar", {
         position: "top-center",
@@ -128,7 +144,11 @@ export function Register() {
         transition: Bounce,
       });
     }
+    finally{
+      
+    }
   }
+  
 
   return (
     <div>
