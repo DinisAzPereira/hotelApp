@@ -10,7 +10,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateField } from '@mui/x-date-pickers/DateField';
 import Button from '@mui/material/Button';
-
+import Rating from '@mui/material/Rating';
 
 
 
@@ -82,7 +82,7 @@ export const HotelDetails: React.FC = () => {
         endDate: formattedEndDate
 
       };
-      console.log("Enviando para a API:", requestBody);
+      console.log("A enviar para a API:", requestBody);
       const response = await fetch(
         "https://api-tma-2024-production.up.railway.app/booking",
         {
@@ -132,7 +132,7 @@ export const HotelDetails: React.FC = () => {
             } else {
 
               console.error("Erro inesperado", response);
-              toast.error("Erro inesperado ao processar a reserva", {
+              toast.error("Erro inesperado ao processar a reserva, nem para fazer uma reserva serves BURRO", {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -204,7 +204,7 @@ export const HotelDetails: React.FC = () => {
   ))}
 </Grid>
 
-          {/* Exibição dos quartos */}
+          {/*  Onde os quartos vão ser mostrados  */}
           <Typography sx={{ mt: 4 }} variant="h5">
             Quartos disponíveis
           </Typography>
@@ -217,6 +217,7 @@ export const HotelDetails: React.FC = () => {
                     <Typography>
                       <strong>Preço:</strong> ${room.price} por noite
                     </Typography>
+              
                     <Grid container spacing={1}>
                       {room.images.map((image) => (
                         <Grid item xs={6} sm={4} key={image.id}>
@@ -267,8 +268,21 @@ export const HotelDetails: React.FC = () => {
               <Grid item xs={12} sm={6} key={Review.id}>
                 <Card variant="outlined" sx={{ padding: 2, borderRadius: '12px' }}>
                   <CardContent>
-                   
-                    <Typography variant="h6">{Review.booking.user.name} do País de {Review.booking.user.country.name} </Typography>
+
+                    <Typography> 
+                    <strong>Data:</strong> {formatDate(Review.createdAt)}
+                    </Typography>
+                    <Rating 
+                    name="read-only" 
+                    value={Review.rating} 
+                    sx={{ display: 'flex', justifyContent: 'center',  }}
+
+                    
+                    readOnly />
+
+                                              
+                    <Typography >{Review.booking.user.name} do País de {Review.booking.user.country.name} </Typography>
+
                     <Typography>
                       <strong>Comentario</strong> {Review.comment} por noite
                     </Typography>

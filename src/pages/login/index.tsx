@@ -51,7 +51,7 @@ export function Login() {
                 // Busca os dados do utilizador autenticado
                     const userData = await fetchUserProfile(token);
 
-                    // Navega para a página de perfil, passando os dados do utilizador
+                    // Navega para a página de perfil e passa os dados do utilizador
                     navigate("/profile")
 
 
@@ -99,7 +99,7 @@ export function Login() {
 
     // Tenta executar o código dentro do bloco try
     try {
-        // Envia uma requisição GET para pegar os dados do perfil do usuário
+        // Envia uma requisição GET para pegar os dados do perfil do utilizador
         const response = await fetch("https://api-tma-2024-production.up.railway.app/me", {
             method: "GET", 
             headers: {
@@ -111,9 +111,9 @@ export function Login() {
         if (response.ok) {
             // Pega os dados que o servidor envia de volta e transforma em JSON (dados do perfil)
             const userData = await response.json();
-            console.log("Dados do utilizador autenticado:", userData); // Exibe os dados na consola
+            console.log("Dados do utilizador autenticado:", userData); // Mostra os dados na consola
 
-            // Exibe uma mensagem de sucesso ao utilizador
+            // Mostra uma mensagem de sucesso ao utilizador
             toast.success("Dados do perfil carregados com sucesso", {
                 position: "top-center", 
                 autoClose: 3000, 
@@ -150,10 +150,10 @@ export function Login() {
 
         } else {
             // Se a resposta não for nenhuma das opções acima, é um erro genérico
-            console.error("Erro ao obter os dados do utilizador"); // Exibe um erro na consola
+            console.error("Erro ao obter os dados do utilizador"); // Mostra o erro na consola
         }
     } catch (error) {
-        // Se acontecer algum erro na execução da função, exibe o erro na consola
+        // Se acontecer algum erro na execução da função, mostra o erro na consola
         console.error("Erro na requisição do perfil:", error);
     }
 }
